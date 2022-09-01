@@ -74,6 +74,28 @@
     margin-right: 10px;
 }
 
+.movie-detail-header-comp:hover .rate .rate-remove {
+    opacity: 1;
+}
+.movie-detail-header-comp .rate {
+    position: relative;
+}
+.movie-detail-header-comp .rate-remove {
+    cursor: pointer;
+    position: absolute;
+    margin: auto;
+    z-index: 10;
+    opacity: 0;
+    transition: opacity .3s;
+}
+
+.movie-detail-header-comp .rate-remove svg {
+    background: #FFF;
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 0px 0px 8px 2px rgb(0 0 0 / 48%);
+}
+
 .rate {
     display: flex;
     align-items: center;

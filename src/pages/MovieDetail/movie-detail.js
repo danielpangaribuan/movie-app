@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { getDetailMovie, updateRateMovies, getRateMoviesByGuest, getSimilarMovies } from "../../redux/actions/movie-action";
+import { getDetailMovie, updateRateMovies, getRateMoviesByGuest, getSimilarMovies, removeRateMovies } from "../../redux/actions/movie-action";
 import { getListGenre } from '../../redux/actions/genre-action';
 import { Button, Modal, Container, Spinner } from 'react-bootstrap';
-import { BsFillStarFill, BsStar } from "react-icons/bs";
+import { BsFillStarFill, BsStar, BsXCircleFill } from "react-icons/bs";
 import { Rating } from 'react-simple-star-rating'
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css"; 
@@ -12,15 +12,14 @@ import "slick-carousel/slick/slick-theme.css";
 import './index.css';
 import LoadingApp from '../../components/LoadingApp';
 import CardApp from '../../components/CardApp';
-// import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
 
 function MovieDetail () {
+    const [count, setCount] = useState(0);
     const [loadingFetch, setLoadingFetch] = useState(false);
     const [inputIsLoading, setInputIsLoading] = useState(false);
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
-
     const [rating, setRating] = useState(0);
     const { id } = useParams();
 
@@ -82,18 +81,6 @@ function MovieDetail () {
 
     };
 
-    useEffect(() => {
-        const fetchData = async () => {
-            setLoadingFetch(true);
-            await dispatch(getListGenre());
-            await dispatch(getSimilarMovies(id));
-            await dispatch(getDetailMovie(id));
-            setLoadingFetch(false);
-        }
-        fetchData();
-        dispatch(getRateMoviesByGuest(localStorage.getItem("guest_session_id")));
-    }, [id]);
-
     const handleRating = (rate) => {
         setRating(rate)
     };
@@ -103,17 +90,26 @@ function MovieDetail () {
             setInputIsLoading(true);
             await dispatch(updateRateMovies(id, parseInt(Math.round(rating/10*2)/2), localStorage.getItem("guest_session_id")));
             setInputIsLoading(false);
-            handleClose()
+            handleClose();
+            setRating(0);
+            setCount(count + 1);
         }
         submit();
     };
+
+    const handlerDeleteRating = async () => {
+        const submit = async () => {
+            await dispatch(removeRateMovies(id, localStorage.getItem("guest_session_id")));
+            setCount(count + 1);
+        }
+        submit();
+    }
 
     const renderRate = () => {
         let isRated = false;
         let rating;
         if ( rateList.length ) {
-            let idx = rateList.findIndex( val => val.id === id );
-
+            let idx = rateList.findIndex( val => val.id === parseInt(id) );
             if ( idx >= 0 ) {
                 isRated = true;
                 rating = rateList[idx].rating;
@@ -140,9 +136,12 @@ function MovieDetail () {
                             <span className='text-muted'>/ 10</span>
                         </span>
                     </div>
+                    <div className="rate-remove">
+                        <BsXCircleFill className='text-danger' onClick={ () => handlerDeleteRating() } />
+                    </div>
                 </div>
-            )
-        }
+            );
+        };
     };
 
     const rendreGenre = (genres) => {
@@ -179,6 +178,18 @@ function MovieDetail () {
         document.body.scrollTop = 0;
         document.documentElement.scrollTop = 0;
     }
+
+    useEffect(() => {
+        const fetchData = async () => {
+            setLoadingFetch(true);
+            await dispatch(getListGenre());
+            await dispatch(getSimilarMovies(id));
+            await dispatch(getDetailMovie(id));
+            await dispatch(getRateMoviesByGuest(localStorage.getItem("guest_session_id")));
+            setLoadingFetch(false);
+        }
+        fetchData();
+    }, [id, dispatch, count]);
 
     if ( !Object.keys(data).length ) return
     return (

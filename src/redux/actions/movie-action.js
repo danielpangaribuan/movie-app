@@ -4,7 +4,6 @@ const API_KEY = process.env.REACT_APP_API_KEY;
 export const getListMovie = ( pageID) => {
     return async ( dispatch ) => {
         try {
-            console.log(process.env)
             const API_LIST_MOVIE = `https://api.themoviedb.org/3/movie/upcoming?api_key=${API_KEY}&page=${pageID}`;
             const respond = await Axios.get(API_LIST_MOVIE);
             dispatch({ type: "GET_LIST_MOVIE", payload: respond.data });
@@ -91,13 +90,13 @@ export const getSimilarMovies = (movieID) => {
     }
 }
 
-export const getVideoMovieDetail = (movieID) => {
+export const removeRateMovies = (movieID, guest_session_id) => {
     return async ( dispatch ) => {
         try {
-            const API_URL = `https://api.themoviedb.org/3/movie/${movieID}/videos?api_key=${API_KEY}`;
-            const respond = await Axios.get(API_URL);
+            const API_URL = `https://api.themoviedb.org/3/movie/${movieID}/rating?api_key=${API_KEY}&guest_session_id=${guest_session_id}`;
+            const respond = await Axios.delete(API_URL);
 
-            dispatch({ type: 'GET_VIDEO_MOVIE_DETAIL', payload: respond.data });
+            dispatch({ type: 'REMOVE_RATING', payload: respond.data });
         } catch ( err ) {
             console.log(err);
         }

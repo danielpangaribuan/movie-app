@@ -6,6 +6,7 @@ const initial_state = {
 };
 
 export const MovieReducer = ( state = initial_state, action ) => {
+    console.log(action)
     switch (action.type) {
         case "GET_LIST_MOVIE":
             return { ...state, data: action.payload }
