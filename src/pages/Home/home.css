@@ -1,0 +1,40 @@
+.home {
+    background: #323a41;
+    min-height: 100vh;
+}
+
+.button-category {
+    background: #00000042!important;
+    border-color: #00000042!important;
+    border-radius: 40px !important;
+}
+
+.button-category:focus {
+    outline: unset;
+    box-shadow: unset !important;
+}
+
+.pagination li span,
+.pagination li a {
+    background: transparent!important;
+    border: none!important;
+}
+
+.page-item:not(.active):not(.disabled) .page-link {
+    color: #a1a1a1!important;
+}
+
+.page-item:not(.active):not(.disabled) .page-link:hover {
+    color: #FFF!important;
+}
+
+.page-item.disabled > .page-link {
+    color: #616161!important;
+}
+
+.home .card img {
+    transition: transform .2s ease-in-out;
+}
+.home .card:hover img {
+    transform: scale(1.05);
+}
